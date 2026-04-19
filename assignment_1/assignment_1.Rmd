@@ -1,0 +1,149 @@
+---
+title: "Assignment 1"
+output: pdf_document
+date: "2026-04-16"
+author: "Bojan Endrovski"
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+library(haven)
+library(ggplot2)
+```
+
+# Assignment 1: Introduction to R and limiting results
+### Bojan Endrovski
+
+
+## Question 1
+
+```{r}
+v <- (1:100)^2
+print(v)
+w <- v[(v >= 120) & (v <= 900)]
+print(w)
+l <- length(w)
+sprintf("w has %d entries", l)
+```
+The vector w has `r l` entries.
+
+
+## Question 2
+
+```{r}
+ess9 <- haven::read_sas("ess9e02.sas7bdat")
+# print(ess9)
+ess9 = data.frame(ess9)
+# print(ess9)
+#unique(ess9$cntry)
+nl_data <- ess9[ess9$cntry == "NL", ]
+sprintf("NL has %d entries", length(nl_data))
+```
+
+In the Netherlands `r length(nl_data)` people have been surveyed.
+
+## Question 3
+
+```{r}
+vec_n <- seq(20, 10000, by=20)
+n <- length(vec_n)
+#print(vec_n)
+vec_ave <- (1:n) # init inc values
+#print(vec_ave)
+for(i in 1:n) {
+  smpl <- rnorm(vec_n[i], mean=3, sd=1)
+  vec_ave[i] <- mean(smpl)
+  #if(i %% 100 == 0) hist(smpl) # show some histograms to viz the data
+}
+print(vec_ave)
+```
+
+## Question 4
+```{r}
+df <- data.frame(samples = vec_n, average = vec_ave)
+# print(head(df))
+ggplot(df, aes(x=samples, y=average)) + geom_line()
+```
+
+The more samples we take the closer our average is to the real mean of the distribution.This demonstrates the low of big numbers.
+
+## Question 5
+```{r}
+
+# skip init and just overwrite vars from Q3 and Q4lues
+for(i in 1:n) {
+  smpl <- rexp(vec_n[i], rate=1/5)
+  vec_ave[i] <- mean(smpl)
+  # if(i %% 100 == 1) hist(smpl)
+}
+
+df <- data.frame(samples = vec_n, average = vec_ave)
+print(head(df))
+ggplot(df, aes(x=samples, y=average)) + geom_line()
+```
+The more samples we take the closer our average is to the real mean of the distribution, in this case 3. Using rate of 1/5 will converge to the mean of 5. This demonstrates the low of big numbers (again).
+
+## Question 6
+```{r}
+
+# skip init and just overwrite vars from Q3 and Q4lues
+for(i in 1:n) {
+  smpl <- rcauchy(vec_n[i], location = 3, scale = 1)
+  vec_ave[i] <- mean(smpl)
+  #if(i %% 100 == 1) hist(smpl)
+}
+
+df <- data.frame(samples = vec_n, average = vec_ave)
+print(head(df))
+ggplot(df, aes(x=samples, y=average)) + geom_line()
+```
+While the avergae values are (on average :] ) close to the location of 3, taking more samples does not improve our estimate of the real mean of the distribution. This is because the "Cauchy distribution is the canonical example of a pathological distribution since both its expected value and its variance are undefined" [https://en.wikipedia.org/wiki/Cauchy_distribution]
+
+
+## Question 7
+```{r}
+n = 200
+N = 5000
+averages = rep(NA , N)
+for (i in 1:N) {
+  mysample = rnorm (n, mean = 3, sd = 1)
+  # if(i %% 100 == 0) hist(mysample, breaks = 30)
+  averages[i] = mean(mysample)
+}
+hist (mysample, breaks = 30)
+hist (averages, breaks = 30)
+```
+### a)
+The above code creates 5000 sets of numbers each made out of 200 samples from a normal distribution with a mean of 3 and standard deviation of 1. The first plots shows the  histogram the last set numbers (set 5000). The next plot is a histogram of all 5000 average values of all the sample sets.
+
+
+### b)
+```{r}
+n = 200
+N = 5000
+averages = rep(NA , N)
+for (i in 1:N) {
+  mysample = rexp(n, rate=1/3)
+  #if(i %% 100 == 0) hist(mysample, breaks = 30)
+  averages[i] = mean(mysample)
+}
+hist (mysample, breaks = 30)
+hist (averages, breaks = 30)
+```
+We observe a normal distribution of the of averages for all samples, which themselves have a different (exponential) distribution. This due to the Central Limit Theorem.
+
+
+### c)
+```{r}
+n = 200
+N = 5000
+averages = rep(NA , N)
+for (i in 1:N) {
+  mysample = rcauchy(n, location = 3, scale = 1)
+  # if(i %% 100 == 0) hist(mysample, breaks = 30)
+  averages[i] = mean(mysample)
+}
+hist (mysample, breaks = 30)
+hist (averages, breaks = 30)
+```
+In this exampels we see that Central Limit Theorem does not apply to the Cauchy distribution, because the distribution does not not have defined finite mean and (positive) variance, which are requirtements foe the Central Limit Theorem [https://en.wikipedia.org/wiki/Central_limit_theorem]
