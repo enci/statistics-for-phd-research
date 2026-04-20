@@ -1,0 +1,141 @@
+---
+title: "Assignment 2"
+output: pdf_document
+date: "2026-04-20"
+author: "Bojan Endrovski"
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+library(haven)
+library(ggplot2)
+```
+
+# Assignment 2: Hypothesis testing and rejection probabilities
+### Bojan Endrovski
+
+## 1. Test for one proportion
+
+### Question 1
+```{r}
+prop.test(x=13, n=20, p=0.5, alternative="two.sided")
+```
+For the sample size of 20 we get a p-value of 0.2636 (> 0.05) thus failing to reject the null hypothesis. We don't have enough evidence to claim that choosing the green door is significantly different from 50%.
+
+### Question 2
+```{r}
+prop.test(x=130, n=200, p=0.5, alternative="two.sided")
+```
+For the sample size of 200 we get a p-value of 0.0000302 (< 0.05) thus rejecting the null hypothesis. We now have sufficient evidence to claim that choosing the green door is significantly different from 50%. The proportion is the same (65% of participants chose the green door), but the bigger sample size give us more statistical power.
+
+### Question 3
+### a)
+```{r}
+n <- 20
+prob <- 0.6
+smp <- rbinom(n, size=1, prob=prob)
+prop.test(sum(smp), n=n, p=0.5, alternative="two.sided")
+```
+Running the experiment mutiple times we get widely different results. The sample estimates the probability anywhere from 0.3 to 0.7 and very high p-value.
+
+### b)
+```{r}
+n <- 200
+prob <- 0.6
+smp <- rbinom(n, size=1, prob=prob)
+prop.test(sum(smp), n=n, p=0.5, alternative="two.sided")
+```
+In comparison with a), the estimates of the probability is a lot closer to 0.6 but the p-value is under 0.05 on majority of the runs, rejecting the null hypotesis. The closer the probability estimate is to the true value of 0.6, the smaller the p-value.
+
+
+### c)
+```{r}
+n <- 200
+prob <- 0.5
+smp <- rbinom(n, size=1, prob=prob)
+prop.test(sum(smp), n=n, p=0.5, alternative="two.sided")
+```
+The p-value is high on most runs, not rejecting the null hypothesis even when the probability estimate is very close to 0.5
+
+
+### d)
+```{r}
+n <- 20
+prob <- 0.1
+smp <- rbinom(n, size=1, prob=prob)
+prop.test(sum(smp), n=n, p=0.5, alternative="two.sided")
+```
+Even with a small sample size we reject the null hypothesis on most runs, unless the probability is estimated at avery different value than 0.1 (ex. prob=0.35 p-value=0.2636)
+
+
+### Question 4
+```{r}
+N <- 500
+n <- 20
+prob <- 0.6
+rej <- rep(0, 500)
+for (i in 1:N) {
+  smp <- rbinom(n, size=1, prob=prob)
+  res <- prop.test(sum(smp), n=n, p=0.5, alternative="two.sided")
+  rej[i] <- res$p.value < 0.05
+}
+sprintf("a) Rejections: %d out of %d (probability: %.4f)", sum(rej), N, mean(rej))
+
+n <- 200
+prob <- 0.6
+rej <- rep(0, 500)
+for (i in 1:N) {
+  smp <- rbinom(n, size=1, prob=prob)
+  res <- prop.test(sum(smp), n=n, p=0.5, alternative="two.sided")
+  rej[i] <- res$p.value < 0.05
+}
+sprintf("b) Rejections: %d out of %d (probability: %.4f)", sum(rej), N, mean(rej))
+
+n <- 200
+prob <- 0.5
+rej <- rep(0, 500)
+for (i in 1:N) {
+  smp <- rbinom(n, size=1, prob=prob)
+  res <- prop.test(sum(smp), n=n, p=0.5, alternative="two.sided")
+  rej[i] <- res$p.value < 0.05
+}
+sprintf("c) Rejections: %d out of %d (probability: %.4f)", sum(rej), N, mean(rej))
+
+n <- 20
+prob <- 0.1
+rej <- rep(0, 500)
+for (i in 1:N) {
+  smp <- rbinom(n, size=1, prob=prob)
+  res <- prop.test(sum(smp), n=n, p=0.5, alternative="two.sided")
+  rej[i] <- res$p.value < 0.05
+}
+sprintf("d) Rejections: %d out of %d (probability: %.4f)", sum(rej), N, mean(rej))
+```
+a) The probability of rejection is low due to the small sample
+b) The probability of rejection is is much higher because of the bigger sample
+c) The probability of rejection is low because the null hypothesis is indeed true
+d) The probability of rejection is high, in-spite of the small sample due to the strong statistical effect
+
+## 2. Test for two proportions
+
+### Question 1
+```{r}
+xs <- c(18, 28)
+ns <- c(30, 40)
+prop.test(x=xs, n=ns, alternative="two.sided")
+```
+From this experiment we can't reject the null hypothesis that px == py. The is no sufficient evidence that the social interaction influences door choice.
+
+### Question 2
+```{r}
+sz1 <-30
+sz2 <- 40
+smp1 <- rbinom(sz1, 1, 0.6)
+smp2 <- rbinom(sz2, 1, 0.8)
+xs <- c(sum(smp1), sum(smp2))
+ns <- c(sz1, sz2)
+prop.test(x=xs, n=ns, alternative="two.sided")
+```
+The null hypothesis is not rejected on more often that it is rejected, but with the sample sizes of 30 and 40 is hard to derive a conclusive answer. When the probability estimates are further apart, the p-value is smaller.
+
+```{r}
