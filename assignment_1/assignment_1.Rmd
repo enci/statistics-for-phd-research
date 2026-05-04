@@ -146,4 +146,4 @@ for (i in 1:N) {
 hist (mysample, breaks = 30)
 hist (averages, breaks = 30)
 ```
-In this exampels we see that Central Limit Theorem does not apply to the Cauchy distribution, because the distribution does not not have defined finite mean and (positive) variance, which are requirtements foe the Central Limit Theorem [https://en.wikipedia.org/wiki/Central_limit_theorem]
+In this exampels we see that Central Limit Theorem does not apply to the Cauchy distribution, because the distribution does not not have defined finite mean and (positive) variance, which are requirements foe the Central Limit Theorem [https://en.wikipedia.org/wiki/Central_limit_theorem]
