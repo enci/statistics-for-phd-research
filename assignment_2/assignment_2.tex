@@ -1,0 +1,449 @@
+% Options for packages loaded elsewhere
+\PassOptionsToPackage{unicode}{hyperref}
+\PassOptionsToPackage{hyphens}{url}
+\documentclass[
+]{article}
+\usepackage{xcolor}
+\usepackage[margin=1in]{geometry}
+\usepackage{amsmath,amssymb}
+\setcounter{secnumdepth}{-\maxdimen} % remove section numbering
+\usepackage{iftex}
+\ifPDFTeX
+  \usepackage[T1]{fontenc}
+  \usepackage[utf8]{inputenc}
+  \usepackage{textcomp} % provide euro and other symbols
+\else % if luatex or xetex
+  \usepackage{unicode-math} % this also loads fontspec
+  \defaultfontfeatures{Scale=MatchLowercase}
+  \defaultfontfeatures[\rmfamily]{Ligatures=TeX,Scale=1}
+\fi
+\usepackage{lmodern}
+\ifPDFTeX\else
+  % xetex/luatex font selection
+\fi
+% Use upquote if available, for straight quotes in verbatim environments
+\IfFileExists{upquote.sty}{\usepackage{upquote}}{}
+\IfFileExists{microtype.sty}{% use microtype if available
+  \usepackage[]{microtype}
+  \UseMicrotypeSet[protrusion]{basicmath} % disable protrusion for tt fonts
+}{}
+\makeatletter
+\@ifundefined{KOMAClassName}{% if non-KOMA class
+  \IfFileExists{parskip.sty}{%
+    \usepackage{parskip}
+  }{% else
+    \setlength{\parindent}{0pt}
+    \setlength{\parskip}{6pt plus 2pt minus 1pt}}
+}{% if KOMA class
+  \KOMAoptions{parskip=half}}
+\makeatother
+\usepackage{color}
+\usepackage{fancyvrb}
+\newcommand{\VerbBar}{|}
+\newcommand{\VERB}{\Verb[commandchars=\\\{\}]}
+\DefineVerbatimEnvironment{Highlighting}{Verbatim}{commandchars=\\\{\}}
+% Add ',fontsize=\small' for more characters per line
+\usepackage{framed}
+\definecolor{shadecolor}{RGB}{248,248,248}
+\newenvironment{Shaded}{\begin{snugshade}}{\end{snugshade}}
+\newcommand{\AlertTok}[1]{\textcolor[rgb]{0.94,0.16,0.16}{#1}}
+\newcommand{\AnnotationTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{\textbf{\textit{#1}}}}
+\newcommand{\AttributeTok}[1]{\textcolor[rgb]{0.13,0.29,0.53}{#1}}
+\newcommand{\BaseNTok}[1]{\textcolor[rgb]{0.00,0.00,0.81}{#1}}
+\newcommand{\BuiltInTok}[1]{#1}
+\newcommand{\CharTok}[1]{\textcolor[rgb]{0.31,0.60,0.02}{#1}}
+\newcommand{\CommentTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{\textit{#1}}}
+\newcommand{\CommentVarTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{\textbf{\textit{#1}}}}
+\newcommand{\ConstantTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{#1}}
+\newcommand{\ControlFlowTok}[1]{\textcolor[rgb]{0.13,0.29,0.53}{\textbf{#1}}}
+\newcommand{\DataTypeTok}[1]{\textcolor[rgb]{0.13,0.29,0.53}{#1}}
+\newcommand{\DecValTok}[1]{\textcolor[rgb]{0.00,0.00,0.81}{#1}}
+\newcommand{\DocumentationTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{\textbf{\textit{#1}}}}
+\newcommand{\ErrorTok}[1]{\textcolor[rgb]{0.64,0.00,0.00}{\textbf{#1}}}
+\newcommand{\ExtensionTok}[1]{#1}
+\newcommand{\FloatTok}[1]{\textcolor[rgb]{0.00,0.00,0.81}{#1}}
+\newcommand{\FunctionTok}[1]{\textcolor[rgb]{0.13,0.29,0.53}{\textbf{#1}}}
+\newcommand{\ImportTok}[1]{#1}
+\newcommand{\InformationTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{\textbf{\textit{#1}}}}
+\newcommand{\KeywordTok}[1]{\textcolor[rgb]{0.13,0.29,0.53}{\textbf{#1}}}
+\newcommand{\NormalTok}[1]{#1}
+\newcommand{\OperatorTok}[1]{\textcolor[rgb]{0.81,0.36,0.00}{\textbf{#1}}}
+\newcommand{\OtherTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{#1}}
+\newcommand{\PreprocessorTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{\textit{#1}}}
+\newcommand{\RegionMarkerTok}[1]{#1}
+\newcommand{\SpecialCharTok}[1]{\textcolor[rgb]{0.81,0.36,0.00}{\textbf{#1}}}
+\newcommand{\SpecialStringTok}[1]{\textcolor[rgb]{0.31,0.60,0.02}{#1}}
+\newcommand{\StringTok}[1]{\textcolor[rgb]{0.31,0.60,0.02}{#1}}
+\newcommand{\VariableTok}[1]{\textcolor[rgb]{0.00,0.00,0.00}{#1}}
+\newcommand{\VerbatimStringTok}[1]{\textcolor[rgb]{0.31,0.60,0.02}{#1}}
+\newcommand{\WarningTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{\textbf{\textit{#1}}}}
+\usepackage{graphicx}
+\makeatletter
+\newsavebox\pandoc@box
+\newcommand*\pandocbounded[1]{% scales image to fit in text height/width
+  \sbox\pandoc@box{#1}%
+  \Gscale@div\@tempa{\textheight}{\dimexpr\ht\pandoc@box+\dp\pandoc@box\relax}%
+  \Gscale@div\@tempb{\linewidth}{\wd\pandoc@box}%
+  \ifdim\@tempb\p@<\@tempa\p@\let\@tempa\@tempb\fi% select the smaller of both
+  \ifdim\@tempa\p@<\p@\scalebox{\@tempa}{\usebox\pandoc@box}%
+  \else\usebox{\pandoc@box}%
+  \fi%
+}
+% Set default figure placement to htbp
+\def\fps@figure{htbp}
+\makeatother
+\setlength{\emergencystretch}{3em} % prevent overfull lines
+\providecommand{\tightlist}{%
+  \setlength{\itemsep}{0pt}\setlength{\parskip}{0pt}}
+\usepackage{bookmark}
+\IfFileExists{xurl.sty}{\usepackage{xurl}}{} % add URL line breaks if available
+\urlstyle{same}
+\hypersetup{
+  pdftitle={Assignment 2},
+  pdfauthor={Bojan Endrovski},
+  hidelinks,
+  pdfcreator={LaTeX via pandoc}}
+
+\title{Assignment 2}
+\author{Bojan Endrovski}
+\date{2026-04-20}
+
+\begin{document}
+\maketitle
+
+\section{Assignment 2: Hypothesis testing and rejection
+probabilities}\label{assignment-2-hypothesis-testing-and-rejection-probabilities}
+
+\subsubsection{Bojan Endrovski}\label{bojan-endrovski}
+
+\subsection{1. Test for one proportion}\label{test-for-one-proportion}
+
+\subsubsection{Question 1}\label{question-1}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\FunctionTok{prop.test}\NormalTok{(}\AttributeTok{x=}\DecValTok{13}\NormalTok{, }\AttributeTok{n=}\DecValTok{20}\NormalTok{, }\AttributeTok{p=}\FloatTok{0.5}\NormalTok{, }\AttributeTok{alternative=}\StringTok{"two.sided"}\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## 
+##  1-sample proportions test with continuity correction
+## 
+## data:  13 out of 20, null probability 0.5
+## X-squared = 1.25, df = 1, p-value = 0.2636
+## alternative hypothesis: true p is not equal to 0.5
+## 95 percent confidence interval:
+##  0.4094896 0.8369133
+## sample estimates:
+##    p 
+## 0.65
+\end{verbatim}
+
+For the sample size of 20 we get a p-value of 0.2636 (\textgreater{}
+0.05) thus failing to reject the null hypothesis. We don't have enough
+evidence to claim that choosing the green door is significantly
+different from 50\%.
+
+\subsubsection{Question 2}\label{question-2}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\FunctionTok{prop.test}\NormalTok{(}\AttributeTok{x=}\DecValTok{130}\NormalTok{, }\AttributeTok{n=}\DecValTok{200}\NormalTok{, }\AttributeTok{p=}\FloatTok{0.5}\NormalTok{, }\AttributeTok{alternative=}\StringTok{"two.sided"}\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## 
+##  1-sample proportions test with continuity correction
+## 
+## data:  130 out of 200, null probability 0.5
+## X-squared = 17.405, df = 1, p-value = 3.02e-05
+## alternative hypothesis: true p is not equal to 0.5
+## 95 percent confidence interval:
+##  0.5790769 0.7150579
+## sample estimates:
+##    p 
+## 0.65
+\end{verbatim}
+
+For the sample size of 200 we get a p-value of 0.0000302 (\textless{}
+0.05) thus rejecting the null hypothesis. We now have sufficient
+evidence to claim that choosing the green door is significantly
+different from 50\%. The proportion is the same (65\% of participants
+chose the green door), but the bigger sample size give us more
+statistical power.
+
+\subsubsection{Question 3}\label{question-3}
+
+\subsubsection{a)}\label{a}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{n }\OtherTok{\textless{}{-}} \DecValTok{20}
+\NormalTok{prob }\OtherTok{\textless{}{-}} \FloatTok{0.6}
+\NormalTok{smp }\OtherTok{\textless{}{-}} \FunctionTok{rbinom}\NormalTok{(n, }\AttributeTok{size=}\DecValTok{1}\NormalTok{, }\AttributeTok{prob=}\NormalTok{prob)}
+\FunctionTok{prop.test}\NormalTok{(}\FunctionTok{sum}\NormalTok{(smp), }\AttributeTok{n=}\NormalTok{n, }\AttributeTok{p=}\FloatTok{0.5}\NormalTok{, }\AttributeTok{alternative=}\StringTok{"two.sided"}\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## 
+##  1-sample proportions test with continuity correction
+## 
+## data:  sum(smp) out of n, null probability 0.5
+## X-squared = 0.05, df = 1, p-value = 0.8231
+## alternative hypothesis: true p is not equal to 0.5
+## 95 percent confidence interval:
+##  0.3204804 0.7617145
+## sample estimates:
+##    p 
+## 0.55
+\end{verbatim}
+
+Running the experiment multiple times we get widely different results.
+The sample estimates the probability anywhere from 0.3 to 0.7 and very
+high p-value.
+
+\subsubsection{b)}\label{b}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{n }\OtherTok{\textless{}{-}} \DecValTok{200}
+\NormalTok{prob }\OtherTok{\textless{}{-}} \FloatTok{0.6}
+\NormalTok{smp }\OtherTok{\textless{}{-}} \FunctionTok{rbinom}\NormalTok{(n, }\AttributeTok{size=}\DecValTok{1}\NormalTok{, }\AttributeTok{prob=}\NormalTok{prob)}
+\FunctionTok{prop.test}\NormalTok{(}\FunctionTok{sum}\NormalTok{(smp), }\AttributeTok{n=}\NormalTok{n, }\AttributeTok{p=}\FloatTok{0.5}\NormalTok{, }\AttributeTok{alternative=}\StringTok{"two.sided"}\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## 
+##  1-sample proportions test with continuity correction
+## 
+## data:  sum(smp) out of n, null probability 0.5
+## X-squared = 4.205, df = 1, p-value = 0.0403
+## alternative hypothesis: true p is not equal to 0.5
+## 95 percent confidence interval:
+##  0.5032062 0.6438648
+## sample estimates:
+##     p 
+## 0.575
+\end{verbatim}
+
+In comparison with a), the estimates of the probability is a lot closer
+to 0.6 but the p-value is under 0.05 on majority of the runs, rejecting
+the null hypothesis. The closer the probability estimate is to the true
+value of 0.6, the smaller the p-value.
+
+\subsubsection{c)}\label{c}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{n }\OtherTok{\textless{}{-}} \DecValTok{200}
+\NormalTok{prob }\OtherTok{\textless{}{-}} \FloatTok{0.5}
+\NormalTok{smp }\OtherTok{\textless{}{-}} \FunctionTok{rbinom}\NormalTok{(n, }\AttributeTok{size=}\DecValTok{1}\NormalTok{, }\AttributeTok{prob=}\NormalTok{prob)}
+\FunctionTok{prop.test}\NormalTok{(}\FunctionTok{sum}\NormalTok{(smp), }\AttributeTok{n=}\NormalTok{n, }\AttributeTok{p=}\FloatTok{0.5}\NormalTok{, }\AttributeTok{alternative=}\StringTok{"two.sided"}\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## 
+##  1-sample proportions test with continuity correction
+## 
+## data:  sum(smp) out of n, null probability 0.5
+## X-squared = 3.125, df = 1, p-value = 0.0771
+## alternative hypothesis: true p is not equal to 0.5
+## 95 percent confidence interval:
+##  0.3657494 0.5067888
+## sample estimates:
+##     p 
+## 0.435
+\end{verbatim}
+
+The p-value is high on most runs, not rejecting the null hypothesis even
+when the probability estimate is very close to 0.5
+
+\subsubsection{d)}\label{d}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{n }\OtherTok{\textless{}{-}} \DecValTok{20}
+\NormalTok{prob }\OtherTok{\textless{}{-}} \FloatTok{0.1}
+\NormalTok{smp }\OtherTok{\textless{}{-}} \FunctionTok{rbinom}\NormalTok{(n, }\AttributeTok{size=}\DecValTok{1}\NormalTok{, }\AttributeTok{prob=}\NormalTok{prob)}
+\FunctionTok{prop.test}\NormalTok{(}\FunctionTok{sum}\NormalTok{(smp), }\AttributeTok{n=}\NormalTok{n, }\AttributeTok{p=}\FloatTok{0.5}\NormalTok{, }\AttributeTok{alternative=}\StringTok{"two.sided"}\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## 
+##  1-sample proportions test with continuity correction
+## 
+## data:  sum(smp) out of n, null probability 0.5
+## X-squared = 11.25, df = 1, p-value = 0.0007962
+## alternative hypothesis: true p is not equal to 0.5
+## 95 percent confidence interval:
+##  0.01751264 0.33127760
+## sample estimates:
+##   p 
+## 0.1
+\end{verbatim}
+
+Even with a small sample size we reject the null hypothesis on most
+runs, unless the probability is estimated at avery different value than
+0.1 (ex. prob=0.35 p-value=0.2636)
+
+\subsubsection{Question 4}\label{question-4}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{N }\OtherTok{\textless{}{-}} \DecValTok{500}
+\NormalTok{n }\OtherTok{\textless{}{-}} \DecValTok{20}
+\NormalTok{prob }\OtherTok{\textless{}{-}} \FloatTok{0.6}
+\NormalTok{rej }\OtherTok{\textless{}{-}} \FunctionTok{rep}\NormalTok{(}\DecValTok{0}\NormalTok{, }\DecValTok{500}\NormalTok{)}
+\ControlFlowTok{for}\NormalTok{ (i }\ControlFlowTok{in} \DecValTok{1}\SpecialCharTok{:}\NormalTok{N) \{}
+\NormalTok{  smp }\OtherTok{\textless{}{-}} \FunctionTok{rbinom}\NormalTok{(n, }\AttributeTok{size=}\DecValTok{1}\NormalTok{, }\AttributeTok{prob=}\NormalTok{prob)}
+\NormalTok{  res }\OtherTok{\textless{}{-}} \FunctionTok{prop.test}\NormalTok{(}\FunctionTok{sum}\NormalTok{(smp), }\AttributeTok{n=}\NormalTok{n, }\AttributeTok{p=}\FloatTok{0.5}\NormalTok{, }\AttributeTok{alternative=}\StringTok{"two.sided"}\NormalTok{)}
+\NormalTok{  rej[i] }\OtherTok{\textless{}{-}}\NormalTok{ res}\SpecialCharTok{$}\NormalTok{p.value }\SpecialCharTok{\textless{}} \FloatTok{0.05}
+\NormalTok{\}}
+\FunctionTok{sprintf}\NormalTok{(}\StringTok{"a) Rejections: \%d out of \%d (probability: \%.4f)"}\NormalTok{, }\FunctionTok{sum}\NormalTok{(rej), N, }\FunctionTok{mean}\NormalTok{(rej))}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## [1] "a) Rejections: 54 out of 500 (probability: 0.1080)"
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{n }\OtherTok{\textless{}{-}} \DecValTok{200}
+\NormalTok{prob }\OtherTok{\textless{}{-}} \FloatTok{0.6}
+\NormalTok{rej }\OtherTok{\textless{}{-}} \FunctionTok{rep}\NormalTok{(}\DecValTok{0}\NormalTok{, }\DecValTok{500}\NormalTok{)}
+\ControlFlowTok{for}\NormalTok{ (i }\ControlFlowTok{in} \DecValTok{1}\SpecialCharTok{:}\NormalTok{N) \{}
+\NormalTok{  smp }\OtherTok{\textless{}{-}} \FunctionTok{rbinom}\NormalTok{(n, }\AttributeTok{size=}\DecValTok{1}\NormalTok{, }\AttributeTok{prob=}\NormalTok{prob)}
+\NormalTok{  res }\OtherTok{\textless{}{-}} \FunctionTok{prop.test}\NormalTok{(}\FunctionTok{sum}\NormalTok{(smp), }\AttributeTok{n=}\NormalTok{n, }\AttributeTok{p=}\FloatTok{0.5}\NormalTok{, }\AttributeTok{alternative=}\StringTok{"two.sided"}\NormalTok{)}
+\NormalTok{  rej[i] }\OtherTok{\textless{}{-}}\NormalTok{ res}\SpecialCharTok{$}\NormalTok{p.value }\SpecialCharTok{\textless{}} \FloatTok{0.05}
+\NormalTok{\}}
+\FunctionTok{sprintf}\NormalTok{(}\StringTok{"b) Rejections: \%d out of \%d (probability: \%.4f)"}\NormalTok{, }\FunctionTok{sum}\NormalTok{(rej), N, }\FunctionTok{mean}\NormalTok{(rej))}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## [1] "b) Rejections: 402 out of 500 (probability: 0.8040)"
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{n }\OtherTok{\textless{}{-}} \DecValTok{200}
+\NormalTok{prob }\OtherTok{\textless{}{-}} \FloatTok{0.5}
+\NormalTok{rej }\OtherTok{\textless{}{-}} \FunctionTok{rep}\NormalTok{(}\DecValTok{0}\NormalTok{, }\DecValTok{500}\NormalTok{)}
+\ControlFlowTok{for}\NormalTok{ (i }\ControlFlowTok{in} \DecValTok{1}\SpecialCharTok{:}\NormalTok{N) \{}
+\NormalTok{  smp }\OtherTok{\textless{}{-}} \FunctionTok{rbinom}\NormalTok{(n, }\AttributeTok{size=}\DecValTok{1}\NormalTok{, }\AttributeTok{prob=}\NormalTok{prob)}
+\NormalTok{  res }\OtherTok{\textless{}{-}} \FunctionTok{prop.test}\NormalTok{(}\FunctionTok{sum}\NormalTok{(smp), }\AttributeTok{n=}\NormalTok{n, }\AttributeTok{p=}\FloatTok{0.5}\NormalTok{, }\AttributeTok{alternative=}\StringTok{"two.sided"}\NormalTok{)}
+\NormalTok{  rej[i] }\OtherTok{\textless{}{-}}\NormalTok{ res}\SpecialCharTok{$}\NormalTok{p.value }\SpecialCharTok{\textless{}} \FloatTok{0.05}
+\NormalTok{\}}
+\FunctionTok{sprintf}\NormalTok{(}\StringTok{"c) Rejections: \%d out of \%d (probability: \%.4f)"}\NormalTok{, }\FunctionTok{sum}\NormalTok{(rej), N, }\FunctionTok{mean}\NormalTok{(rej))}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## [1] "c) Rejections: 19 out of 500 (probability: 0.0380)"
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{n }\OtherTok{\textless{}{-}} \DecValTok{20}
+\NormalTok{prob }\OtherTok{\textless{}{-}} \FloatTok{0.1}
+\NormalTok{rej }\OtherTok{\textless{}{-}} \FunctionTok{rep}\NormalTok{(}\DecValTok{0}\NormalTok{, }\DecValTok{500}\NormalTok{)}
+\ControlFlowTok{for}\NormalTok{ (i }\ControlFlowTok{in} \DecValTok{1}\SpecialCharTok{:}\NormalTok{N) \{}
+\NormalTok{  smp }\OtherTok{\textless{}{-}} \FunctionTok{rbinom}\NormalTok{(n, }\AttributeTok{size=}\DecValTok{1}\NormalTok{, }\AttributeTok{prob=}\NormalTok{prob)}
+\NormalTok{  res }\OtherTok{\textless{}{-}} \FunctionTok{prop.test}\NormalTok{(}\FunctionTok{sum}\NormalTok{(smp), }\AttributeTok{n=}\NormalTok{n, }\AttributeTok{p=}\FloatTok{0.5}\NormalTok{, }\AttributeTok{alternative=}\StringTok{"two.sided"}\NormalTok{)}
+\NormalTok{  rej[i] }\OtherTok{\textless{}{-}}\NormalTok{ res}\SpecialCharTok{$}\NormalTok{p.value }\SpecialCharTok{\textless{}} \FloatTok{0.05}
+\NormalTok{\}}
+\FunctionTok{sprintf}\NormalTok{(}\StringTok{"d) Rejections: \%d out of \%d (probability: \%.4f)"}\NormalTok{, }\FunctionTok{sum}\NormalTok{(rej), N, }\FunctionTok{mean}\NormalTok{(rej))}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## [1] "d) Rejections: 492 out of 500 (probability: 0.9840)"
+\end{verbatim}
+
+\begin{enumerate}
+\def\labelenumi{\alph{enumi})}
+\tightlist
+\item
+  The probability of rejection is low due to the small sample
+\item
+  The probability of rejection is is much higher because of the bigger
+  sample
+\item
+  The probability of rejection is low because the null hypothesis is
+  indeed true
+\item
+  The probability of rejection is high, in-spite of the small sample due
+  to the strong statistical effect
+\end{enumerate}
+
+\subsection{2. Test for two proportions}\label{test-for-two-proportions}
+
+\subsubsection{Question 1}\label{question-1-1}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{xs }\OtherTok{\textless{}{-}} \FunctionTok{c}\NormalTok{(}\DecValTok{18}\NormalTok{, }\DecValTok{28}\NormalTok{)}
+\NormalTok{ns }\OtherTok{\textless{}{-}} \FunctionTok{c}\NormalTok{(}\DecValTok{30}\NormalTok{, }\DecValTok{40}\NormalTok{)}
+\FunctionTok{prop.test}\NormalTok{(}\AttributeTok{x=}\NormalTok{xs, }\AttributeTok{n=}\NormalTok{ns, }\AttributeTok{alternative=}\StringTok{"two.sided"}\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## 
+##  2-sample test for equality of proportions with continuity correction
+## 
+## data:  xs out of ns
+## X-squared = 0.38176, df = 1, p-value = 0.5367
+## alternative hypothesis: two.sided
+## 95 percent confidence interval:
+##  -0.3547755  0.1547755
+## sample estimates:
+## prop 1 prop 2 
+##    0.6    0.7
+\end{verbatim}
+
+From this experiment we can't reject the null hypothesis that px == py.
+The is no sufficient evidence that the social interaction influences
+door choice.
+
+\subsubsection{Question 2}\label{question-2-1}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{sz1 }\OtherTok{\textless{}{-}}\DecValTok{30}
+\NormalTok{sz2 }\OtherTok{\textless{}{-}} \DecValTok{40}
+\NormalTok{smp1 }\OtherTok{\textless{}{-}} \FunctionTok{rbinom}\NormalTok{(sz1, }\DecValTok{1}\NormalTok{, }\FloatTok{0.6}\NormalTok{)}
+\NormalTok{smp2 }\OtherTok{\textless{}{-}} \FunctionTok{rbinom}\NormalTok{(sz2, }\DecValTok{1}\NormalTok{, }\FloatTok{0.8}\NormalTok{)}
+\NormalTok{xs }\OtherTok{\textless{}{-}} \FunctionTok{c}\NormalTok{(}\FunctionTok{sum}\NormalTok{(smp1), }\FunctionTok{sum}\NormalTok{(smp2))}
+\NormalTok{ns }\OtherTok{\textless{}{-}} \FunctionTok{c}\NormalTok{(sz1, sz2)}
+\FunctionTok{prop.test}\NormalTok{(}\AttributeTok{x=}\NormalTok{xs, }\AttributeTok{n=}\NormalTok{ns, }\AttributeTok{alternative=}\StringTok{"two.sided"}\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## 
+##  2-sample test for equality of proportions with continuity correction
+## 
+## data:  xs out of ns
+## X-squared = 0.625, df = 1, p-value = 0.4292
+## alternative hypothesis: two.sided
+## 95 percent confidence interval:
+##  -0.3643341  0.1310007
+## sample estimates:
+##    prop 1    prop 2 
+## 0.6333333 0.7500000
+\end{verbatim}
+
+The null hypothesis is not rejected on more often that it is rejected,
+but with the sample sizes of 30 and 40 is hard to derive a conclusive
+answer. When the probability estimates are further apart, the p-value is
+smaller.
+
+\end{document}

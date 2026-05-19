@@ -36,7 +36,7 @@ prob <- 0.6
 smp <- rbinom(n, size=1, prob=prob)
 prop.test(sum(smp), n=n, p=0.5, alternative="two.sided")
 ```
-Running the experiment mutiple times we get widely different results. The sample estimates the probability anywhere from 0.3 to 0.7 and very high p-value.
+Running the experiment multiple times we get widely different results. The sample estimates the probability anywhere from 0.3 to 0.7 and very high p-value.
 
 ### b)
 ```{r}
@@ -45,7 +45,7 @@ prob <- 0.6
 smp <- rbinom(n, size=1, prob=prob)
 prop.test(sum(smp), n=n, p=0.5, alternative="two.sided")
 ```
-In comparison with a), the estimates of the probability is a lot closer to 0.6 but the p-value is under 0.05 on majority of the runs, rejecting the null hypotesis. The closer the probability estimate is to the true value of 0.6, the smaller the p-value.
+In comparison with a), the estimates of the probability is a lot closer to 0.6 but the p-value is under 0.05 on majority of the runs, rejecting the null hypothesis. The closer the probability estimate is to the true value of 0.6, the smaller the p-value.
 
 
 ### c)
