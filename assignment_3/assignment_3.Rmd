@@ -1,5 +1,5 @@
 ---
-title: "Assignment 2"
+title: "Assignment 3"
 output: pdf_document
 date: "2026-04-20"
 author: "Bojan Endrovski"
@@ -11,4 +11,103 @@ library(haven)
 library(ggplot2)
 ```
 
+
+## 1. About p-values
+
+### Question 1
+- The problem in the comic is the scientists are doing multiple testing but not taking that into account when presenting the results (or are misinterpreted by the paper).The one false positive can be explained purely by chance when doing 20 experiments (20 × 0.05 = 1).
+- We can solve this by dividing by the number of tests, so use 0.05/20 = 0.0025 as the threshold instead of 0.05.
+
+### Question 2
+- p-value get the blame for oversimplification and thus misinterpretation of results.
+
+### Question 3
+- The ban did not improve the quality of the publications, since p-values were replaced with other similar tools. The issues was not the tool, but its usage and scientific bias towards showing positive results.
+
+### Question 4
+- I simply don't have enough experience to have an opinion on this. I have use them in my papers so far and probably will keep using them going forward, since I am in a field that is low on statistics and p-values are one of the better understood statistical tools (and I release the data with my papers)
+
+
+
+
+## 1. Power analysis for test of a proportion
+
+
+# Question 1
+```{r}
+N <- 500
+ns <- seq(10, 200, by=5)  # range of sample sizes to test
+prb = 0.7
+power1prop <- rep(NA, length(ns))
+
+for (j in 1:length(ns)) {
+  rej <- rep(NA, N)
+  for (i in 1:N) {
+    smp <- rbinom(ns[j], size=1, prob=prb)
+    res <- prop.test(sum(smp), n=ns[j], p=0.5, alternative="two.sided")
+    rej[i] <- res$p.value < 0.05
+  }
+  power1prop[j] <- mean(rej)
+}
+
+dfQ1 <- data.frame(n=ns, power1prop=power1prop)
+
+ggplot(dfQ1) +
+  geom_line(aes(x=n, y=power1prop)) +
+  geom_hline(yintercept=0.80, color="red")
+```
+
+Around 50 samples we cross the 80% line
+
+
+# Question 2
+```{r}
+N <- 500
+ns <- seq(10, 200, by=5)  # range of sample sizes to test
+prb = 0.6
+power1prop <- rep(NA, length(ns))
+
+for (j in 1:length(ns)) {
+  rej <- rep(NA, N)
+  for (i in 1:N) {
+    smp <- rbinom(ns[j], size=1, prob=prb)
+    res <- prop.test(sum(smp), n=ns[j], p=0.5, alternative="two.sided")
+    rej[i] <- res$p.value < 0.05
+  }
+  power1prop[j] <- mean(rej)
+}
+
+dfQ2 <- data.frame(n=ns, power1prop=power1prop)
+
+ggplot(dfQ2) +
+  geom_line(aes(x=n, y=power1prop)) +
+  geom_hline(yintercept=0.80, color="red")
+```
+
+We need almost 200 samples to obtain power of 80%, much higher than the 0.7 probability. The test power scales roughly squarely with effect size (which halved)
+
+# Question 3
+
+```{r}
+N <- 500
+probs <- seq(0.1, 0.9, by=0.01)
+power <- rep(NA, length(probs))
+n = 80
+
+for (j in 1:length(probs)) {
+  rej <- rep(NA, N)
+  for (i in 1:N) {
+    smp <- rbinom(n, size=1, prob=probs[j])
+    res <- prop.test(sum(smp), n=n, p=0.5, alternative="two.sided")
+    rej[i] <- res$p.value < 0.05
+  }
+  power[j] <- mean(rej)
+}
+
+dfQ3 <- data.frame(pstar=probs, power=power)
+
+ggplot(dfQ3) + geom_line(aes(x=pstar, y=power)) + geom_hline(yintercept=0.80, color="red")
+```
+
+With n = 80 participants, the power exceeds 80% when p* <= 0.3 or p* >= 0.7. That is least 0.2 distance from 0.5. For values of p* closer to 0.5 (like 0.6) the sample size is too small. Increasing the sample size makes the "v" shape deeper.
 
