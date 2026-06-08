@@ -1,0 +1,116 @@
+---
+title: "assignment_4"
+output: html_document
+date: "2026-06-08"
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+library(haven)
+library(ggplot2)
+```
+
+
+## 1. Happiness and income
+
+### Question 1
+```{r}
+
+# Load data
+ess9 <- haven::read_sas("ess9e02.sas7bdat")
+ess9 <- data.frame(ess9)
+
+# Run prep from Bright Space 
+source("prepare_ess9.R")
+
+# Create happy_cent first
+data_ess9$happy_cent <- data_ess9$happy - mean(data_ess9$happy)
+
+# Store in a list
+formulas <- c(
+  netincome ~ happy,
+  netincome ~ polintr,
+  netincome ~ happy + polintr,
+  netincome ~ happy * polintr,
+  netincome ~ happy_cent + polintr,
+  netincome ~ happy_cent * polintr
+)
+
+# Make empty lists
+models <- vector("list", length(formulas))
+summaries <- vector("list", length(formulas))
+
+# Fill them up
+for (i in 1:length(formulas)) {
+  models[[i]] <- lm(data=data_ess9, formulas[[i]])
+  summaries[[i]] <- summary(models[[i]])
+}
+
+data.frame(
+  model = paste0("reg", 1:6),
+  r2 = sapply(summaries, function(s) s$r.squared),
+  r2adj = sapply(summaries, function(s) s$adj.r.squared),
+  aic = sapply(models, AIC),
+  bic = sapply(models, BIC)
+)
+
+metrics <- data.frame(
+  model = paste("reg", 1:6, sep=""),
+  r2 = sapply(summaries, function(s) s$r.squared),
+  r2adj = sapply(summaries, function(s) s$adj.r.squared),
+  aic = sapply(models, AIC),
+  bic = sapply(models, BIC)
+)
+print(metrics)
+
+```
+Best in terms of AIC -> reg3 or reg5 (lowest value is 18040.67)
+Best in terms of Best for BIC -> reg3 or reg5 (lowest value is 18070.30) 
+Best in terms of R2 -> reg4 or reg6 (highest at 0.0422)
+Best in terms of Adjusted R2 -> reg3 or reg5 (highest at 0.0360) -> prefers simpler models
+
+
+### Question 2
+I choose the regression 5 model. It's a winner in the table above together with reg3. While statically equivalent to reg3, it's centered around the average happiness, making it easier to interpret.
+
+```{r}
+summary(models[[5]])
+
+ggplot(data_ess9, aes(x=factor(polintr), y=netincome)) +
+  geom_boxplot() +
+  geom_jitter(alpha=0.5) +  # show individual points too
+  labs(x="Political interest (1=very, 4=not at all)", y="Net income")
+
+ggplot(data_ess9, aes(x=happy_cent, y=netincome)) +
+  geom_jitter(alpha=0.5) +
+  geom_smooth(method="lm") +
+  labs(x="Happiness (centered)", y="Net income")
+
+```
+What we can see from the data is that political interest is not a strong statistical predictors for income, in-spite of p < 0.05.
+We also see statistically significant positive association between happiness and net income. But R2 is only ~4% and the regression slope is modest, so also it's not a strong predictors for income. This does not directly imply causality (happy people earn more).
+
+
+## 2. About histograms
+
+```{r}
+set.seed(1)
+par(mfrow = c(3,3))
+for(i in 1:9) {
+  mysample = rnorm(20)
+  hist(mysample, main = i)
+}
+```
+```{r}
+install.packages("cowplot")
+set.seed(2)
+par ( mfrow = c (1, 1))
+mysample = data.frame (measurements = rnorm (200))
+p1 = ggplot ( mysample ) + geom_histogram ( aes ( x = measurements ) , bins = 4 )
+p2 = ggplot ( mysample ) + geom_histogram ( aes ( x = measurements ) , bins = 20 )
+p3 = ggplot ( mysample ) + geom_histogram ( aes ( x = measurements ) , bins = 60 )
+p4 = ggplot ( mysample ) + geom_histogram ( aes ( x = measurements ) , bins = 400 )
+cowplot::plot_grid(p1 , p2 , p3 , p4 , labels = LETTERS [1:4])
+```
+
+
