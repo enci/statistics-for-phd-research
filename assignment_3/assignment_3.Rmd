@@ -28,12 +28,10 @@ library(ggplot2)
 - I simply don't have enough experience to have an opinion on this. I have use them in my papers so far and probably will keep using them going forward, since I am in a field that is low on statistics and p-values are one of the better understood statistical tools (and I release the data with my papers)
 
 
+## 2. Power analysis for test of a proportion
 
 
-## 1. Power analysis for test of a proportion
-
-
-# Question 1
+### Question 1
 ```{r}
 N <- 500
 ns <- seq(10, 200, by=5)  # range of sample sizes to test
@@ -60,7 +58,7 @@ ggplot(dfQ1) +
 Around 50 samples we cross the 80% line
 
 
-# Question 2
+### Question 2
 ```{r}
 N <- 500
 ns <- seq(10, 200, by=5)  # range of sample sizes to test
@@ -86,7 +84,7 @@ ggplot(dfQ2) +
 
 We need almost 200 samples to obtain power of 80%, much higher than the 0.7 probability. The test power scales roughly squarely with effect size (which halved)
 
-# Question 3
+### Question 3
 
 ```{r}
 N <- 500
@@ -110,4 +108,70 @@ ggplot(dfQ3) + geom_line(aes(x=pstar, y=power)) + geom_hline(yintercept=0.80, co
 ```
 
 With n = 80 participants, the power exceeds 80% when p* <= 0.3 or p* >= 0.7. That is least 0.2 distance from 0.5. For values of p* closer to 0.5 (like 0.6) the sample size is too small. Increasing the sample size makes the "v" shape deeper.
+
+## 3. Power analysis and linear regressions
+
+### Question 1
+
+```{r}
+n = 30
+x = rexp(n=n)
+epsilon = runif(n=n, -1.5, 1.5)
+y = 3 + 0.8*x + epsilon
+myregression = lm(y~x)
+summary(myregression)
+```
+
+The distribution of Ei is uniform (not Gaussian).
+The distribution of Xi is exponential (not Gaussian).
+
+### Question 2
+The true value of B*1 is 0.8 and it's estimate (B^1) is 0.9619. 
+
+### Question 3
+With p-value of 0.001232, B is significantly different from 0
+
+### Question 4
+```{r}
+N <- 500
+rej <- rep(NA, N)
+for (i in 1:N) {
+  x <- rexp(n=30)
+  epsilon <- runif(n=30, -1.5, 1.5)
+  y <- 3 + 0.8*x + epsilon
+  reg <- lm(y~x)
+  coef_table <- summary(reg)$coefficients
+  pval <- coef_table["x", "Pr(>|t|)"]
+  rej[i] <- pval < 0.05
+}
+pwr <- mean(rej)
+sprintf("The power of the test in this setting is %0.4f", pwr)
+```
+
+### Question 5
+```{r}
+N <- 500
+rej <- rep(NA, N)
+for (i in 1:N) {
+  x <- rexp(n=30)
+  epsilon <- runif(n=30, -1.5, 1.5)
+  y <- 3 + epsilon
+  reg <- lm(y~x)
+  coef_table <- summary(reg)$coefficients
+  pval <- coef_table["x", "Pr(>|t|)"]
+  rej[i] <- pval < 0.05
+}
+type1_error <- mean(rej)
+sprintf("The rejection probability of the hypothesis (type I errors in this case) is %0.4f", type1_error)
+```
+
+This probability is called Type I error rate (it's due to false positives).
+
+
+### Question 6
+Even though neither Ei nor Xi have normal distribution, the t-test performs well due to the Central Limit Theorem.
+
+
+
+
 
