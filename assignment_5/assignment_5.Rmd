@@ -1,0 +1,151 @@
+---
+title: "Assignment 5"
+output: pdf_document
+date: "2026-06-10"
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+library(haven)
+library(ggplot2)
+library(lmerTest)
+```
+
+## 1. Kernel smoothing
+
+### Question 1
+
+```{r}
+data_grades <- read.csv("data_grades.csv")
+
+# Some histograms first
+bins <- c(20, 40, 80, 160)
+results_hist <- data.frame()
+for (b in bins) {
+  h <- hist(data_grades$grade_Math, breaks=b, plot=FALSE)
+  bin_width <- h$breaks[2] - h$breaks[1]
+  results_hist <- rbind(results_hist, data.frame(
+    x = h$mids,
+    y = h$density,
+    bins = b,
+    width = bin_width
+  ))
+}
+
+ggplot(results_hist, aes(x=x, y=y, width=width)) +
+  geom_bar(stat="identity") +
+  facet_wrap(~bins, labeller=label_both)
+
+
+# Do the kernels now
+bandwidths <- c(0.05, 0.08, 0.1, 0.2)
+kernels <- c("gaussian", "epanechnikov")
+
+# Math
+results <- data.frame()
+for (bw in bandwidths) {
+  for (kr in kernels) {
+     d <- density(data_grades$grade_Math, bw=bw, kernel=kr)
+     results <- rbind(results, data.frame(
+      x = d$x,
+      y = d$y,
+      bw = bw,
+      kernel = kr
+    ))
+  }
+}
+
+ggplot(results, aes(x=x, y=y, color=kernel)) +
+  geom_line() +
+  facet_wrap(~bw, labeller=label_both) +
+  labs(x="Grade", y="Density", title="Math Grades")
+
+# English
+results <- data.frame()
+for (bw in bandwidths) {
+  for (kr in kernels) {
+     d <- density(data_grades$grade_English, bw=bw, kernel=kr)
+     results <- rbind(results, data.frame(
+      x = d$x,
+      y = d$y,
+      bw = bw,
+      kernel = kr
+    ))
+  }
+}
+
+ggplot(results, aes(x=x, y=y, color=kernel)) +
+  geom_line() +
+  facet_wrap(~bw, labeller=label_both) +
+  labs(x="Grade", y="Density", title="English Grades")
+
+```
+
+### Question 2
+The math grades have approximately "normal" distribution and the English grades a bit less so with a sharp peak at 4. The most obvious is the kernel play small role in comparison to the bandwidth. The bandwidth of 0.1 or 0.2 clearly shows the distribution and has very little noise.
+
+### Question 3
+```{r}
+
+bandwidths <- c(0.25, 0.15, 0.1, 0.08)
+
+# Create a function to avoid all the copy+paste
+compute_density <- function(data, bandwidths, kernel="gaussian") {
+  results <- data.frame()
+  for (bw in bandwidths) {
+    d <- density(data, bw=bw, kernel=kernel)
+    results <- rbind(results, data.frame(
+      x = d$x,
+      y = d$y,
+      bw = bw,
+      kernel = kernel,
+      label = paste0(kernel, " bw=", bw)
+    ))
+  }
+  return(results)
+}
+
+dens_support <- compute_density(data_grades$grade_Math[data_grades$HasSupport == TRUE], bandwidths)
+dens_support$group <- "Support"
+
+dens_no_support <- compute_density(data_grades$grade_Math[data_grades$HasSupport == FALSE], bandwidths)
+dens_no_support$group <- "No Support"
+
+results_q3 <- rbind(dens_support, dens_no_support)
+
+ggplot(results_q3, aes(x=x, y=y, color=group, linetype=label)) +
+  geom_line() +
+  scale_linetype_manual(values=c(
+    "gaussian bw=0.25" = "longdash",
+    "gaussian bw=0.15" = "solid", # best one
+    "gaussian bw=0.1" = "dotted",
+    "gaussian bw=0.08" = "dotted"
+  )) +
+  labs(x="Math grade", y="Density", 
+       title="Math grade density by support group",
+       color="Group", linetype="Bandwidth")
+
+```
+
+Here we use the Gaussian kernel (by default, but can be changed)
+
+### Question 4
+
+We can see that the supported students scored lower, but we can't conclude if the support increases the grade since the students were specifically selected because they were struggling.
+
+## 2. Linear mixed models
+
+```{r}
+reg_lmm = lmerTest::lmer(grade_Math ~ HasSupport + (1|class), data = data_grades)
+summary (reg_lmm)
+```
+
+### Question 1
+### Question 2
+### Question 3
+### Question 4
+
+
+## 2.1 Bonus part (not mandatory)
+
+
