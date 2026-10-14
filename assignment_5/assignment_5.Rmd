@@ -141,11 +141,38 @@ summary (reg_lmm)
 ```
 
 ### Question 1
+
+The math support does help increase the grade, by an estimated 0.461 points. The uncertainty (Standard Error) is 0.042 and p < 0.001. The program does have a postivie effect.
+
 ### Question 2
+
+```{r}
+data_grades$grade_English_cent <- data_grades$grade_English - mean(data_grades$grade_English)
+
+reg_Engl <- lmerTest::lmer(
+  grade_Math ~ HasSupport * grade_English_cent + (1|class),
+  data=data_grades, REML=FALSE)
+
+summary(reg_Engl)
+```
+The interaction between the support and the English grade is statically significant with a estimate -0.128, SE 0.127 and p-value <2e-16. The negative value points that for students with higher English grade the support program is not effective.
+
 ### Question 3
+
+```{r}
+reg_Engl_rs = lmerTest::lmer(
+  grade_Math ~ HasSupport * grade_English_cent + (grade_English_cent | class),
+  data = data_grades,
+  REML = FALSE )
+summary(reg_Engl_rs)
+```
+
+Introducing random slopes in the model changes the conclusion and does not show significant interaction (p-value of 0.217) between the English grade the effectiveness of the support program.
+
 ### Question 4
 
-
-## 2.1 Bonus part (not mandatory)
-
-
+```{r}
+AIC(reg_Engl, reg_Engl_rs)
+BIC(reg_Engl, reg_Engl_rs)
+```
+The random slopes model fits the data better according to both AIC and BIC. So the final conclusion is that there is no significant interaction between the English grade the effectiveness of the support program.
