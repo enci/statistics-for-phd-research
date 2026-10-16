@@ -1,0 +1,149 @@
+---
+output:
+  pdf_document: default
+  html_document: default
+---
+
+
+```{r}
+library(haven)
+ess9 <- read_sas("ess9e02.sas7bdat")
+ess9 <- data.frame(ess9)
+source("Assignment6_prepare_ess9.R")
+```
+
+# Question 1
+
+```{r}
+library(corrplot)
+
+corr_matrix <- cor(data_ess9)
+round(corr_matrix, 2)
+corrplot(corr_matrix, method="color", type="upper", addCoef.col="black", tl.col="black")
+```
+
+netincome & fairnetincome are  highly correlated (0.77)
+age & timeinternet are correlated in opposite directions (-0.32)
+number_household & age are correlated in opposite directions (-0.31)
+netincome & polintr are correlated in opposite directions (-0.27) (with higher income people are more politically interested)
+happy & polintr are not correlated (0.0)
+
+
+# Question 2
+
+```{r}
+library(ggplot2)
+
+eigen_decomp <- eigen(corr_matrix)
+eigenvalues <- eigen_decomp$values
+
+# Scree plot
+scree_df <- data.frame(
+  PC = 1:length(eigenvalues),
+  eigenvalue = eigenvalues
+)
+
+ggplot(scree_df, aes(x=PC, y=eigenvalue)) +
+  geom_line() +
+  geom_point() +
+  geom_hline(yintercept=1, color="cyan", linetype="dashed") +
+  labs(x="Principal Component", y="Eigenvalue", title="Scree Plot")
+
+round(eigenvalues, 2)
+cumsum(eigenvalues) / sum(eigenvalues)
+
+
+```
+Keeping the two first principal components is adequate given for the plot, since the lie above the y=1 line. We can also keep the first three components, since the value for three is above the line (1.09) and left of the fallter part of the curve.
+
+# Question 3
+
+
+```{r}
+pca <- prcomp(data_ess9, center=TRUE, scale=TRUE)
+biplot(pca, scale=0, cex=c(0.3, 0), col=c("blue", "red"))
+```
+
+```{r}
+loadings_df <- data.frame(
+  variable = rownames(pca$rotation),
+  PC1 = pca$rotation[,1],
+  PC2 = pca$rotation[,2]
+)
+
+ggplot(loadings_df, aes(x=PC1, y=PC2, label=variable, color=variable)) +
+  geom_point() +
+  geom_text(vjust=-0.5, size=3) +
+  geom_segment(aes(x=0, y=0, xend=PC1, yend=PC2, color=variable), 
+               arrow=arrow(length=unit(0.2,"cm"))) +
+  coord_fixed() +
+  xlim(-1,1) + ylim(-1,1) +
+  annotate("path", x=cos(seq(0,2*pi,length.out=100)),
+                   y=sin(seq(0,2*pi,length.out=100))) +
+  scale_color_brewer(palette="Set1") +
+  labs(title="Correlation Circle")
+  #theme_minimal()
+```
+
+# Question 4
+
+There are indeed 4 groups:
+netincome & fairnetincome — pointing right on PC1
+age — pointing up on PC2
+number_household & timeinternet — pointing down on PC2
+happy & polintr — at perpendicular nearly uncorrelated (not sure if this is a "group" in this context)
+
+The correlation circle gives us a similar conclusion the one in question 1.
+
+
+# Question 5
+
+```{r}
+scores_df <- data.frame(pca$x)
+
+# Apparently 3 times the SD is common in statistics
+scores_df$outlier <- abs(scores_df$PC1) > 3*sd(scores_df$PC1) | 
+                     abs(scores_df$PC2) > 3*sd(scores_df$PC2)
+
+ggplot(scores_df, aes(x=PC1, y=PC2, color=outlier)) +
+  geom_point(size=1.0) +
+  scale_color_manual(values=c("grey", "red")) +
+  theme_minimal()
+
+outlier_rows <- which(scores_df$outlier)
+data_ess9[outlier_rows, ]
+
+mean(data_ess9$happy)
+mean(data_ess9[outlier_rows, ]$happy)
+```
+The are some outliers (using a threshold of 3 times the standard deviation). They are high earners and they are a point happier on average than the rest.
+
+# Question 6
+
+```{r}
+loadings_df <- data.frame(variable = rownames(pca$rotation), PC1 = pca$rotation[,1], PC2 = pca$rotation[,2])
+
+ggplot(loadings_df, aes(x=reorder(variable, PC1), y=PC1)) +
+  geom_bar(stat="identity") +
+  coord_flip() +
+  labs(title="Factor loadings - PC1")
+
+ggplot(loadings_df, aes(x=reorder(variable, PC2), y=PC2)) +
+  geom_bar(stat="identity") +
+  coord_flip() +
+  labs(title="Factor loadings - PC2")
+```
+
+On PC1:
+netincome and fairnetincome (positive) (high loadings ~0.6)
+vs
+polintr (-0.4) (negative)
+
+On PC2:
+age (positive) (~0.6)
+number_household, timeinternet, happy (negative) (~-0.3 to -0.4)
+
+# Question 7
+
+- PC1 can be interpreted as a socioeconomic axis. High scores correspond to higher income and more interest in politics.
+- PC2 can be interpreted simple as a age axis. Older respondents (smaller households, less internet use) and younger respondents (larger households, more internet use).
